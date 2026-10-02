@@ -167,11 +167,17 @@ export class RuntimeCore {
     this.turnCount.set(sessionId, turns);
 
     const cacheFile = sessionCacheFile(this.harness, sessionId);
-    if (this.deferInitialReflect) {
+    if (turns === 1) {
       // `seedIfCold` has no session id. Transfer its SessionStart decision to the first concrete
-      // session here; `buildHookOutput` consumes it exactly once, like hook harnesses do.
+      // session here; `buildHookOutput` consumes it exactly once, like hook harnesses do. The
+      // preamble below carries the full tool guide on this turn, so record it as delivered and
+      // the turn's own refresh does not repeat it.
+      const defer = this.deferInitialReflect;
       this.deferInitialReflect = false;
-      writeSessionCache(cacheFile, { deferInitialReflect: true });
+      writeSessionCache(cacheFile, {
+        ...(defer ? { deferInitialReflect: true } : {}),
+        guideAtTurn: 0,
+      });
     }
     const output = await buildHookOutput({
       harness: this.harness,
