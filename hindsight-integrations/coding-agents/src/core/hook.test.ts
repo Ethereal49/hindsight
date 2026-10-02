@@ -834,7 +834,7 @@ describe("buildHookOutput: which tool guide a turn carries", () => {
     mkdirSync(join(root, "cache"), { recursive: true });
     writeFileSync(cacheFile, JSON.stringify({ guideAtTurn: 0 }));
     const ctx = await turnsOf(2);
-    const full = buildRosterRefresh([{ id: "p1", name: "Uploader guide" }]);
+    const full = buildRosterRefresh([{ id: "p1", title: "Uploader guide" }]);
     expect(ctx[1]).toContain(CREDIT);
     expect(ctx[1].length).toBeLessThan(full.length / 3);
   });
